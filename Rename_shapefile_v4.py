@@ -5,52 +5,61 @@
 # Devloped by Sharad Shingade and Suman Kumar for UXO-India.
 ###############################
 
-import os
-import os.path
-import ntpath
-import shutil
-import glob
+import os.path, ntpath, shutil, glob
 
-###
 
-data_dir = r"D:\#Resilient_Cities\Phase_I_output"
+#####
+# input raw data directory
+
+raw_data = raw_input("Enter input workspace: ") # folder containing raw files of process urban edge generation
+output_copy_file = raw_input("Enter copy and rename workspace:  ")
+
+#raw_data = r"D:\#Python_script_devlopment\#halton_circle_generation\Input"
+#output_copy_file = r"D:\#Python_script_devlopment\#halton_circle_generation\Final_input"
 
 basepath = os.path.basename
 
 print basepath
 
-## All data directorries
+# all data directories #
 
-all_data_dir =[x[0] for x in os.walk(data_dir)][1:]
+all_raw_data = [x[0] for x in os.walk(raw_data)][1:]
 
-#print all_data_dir
-print "\n data directory %s....." %all_data_dir
+# print all_raw_data
 
-for current_data_dir in all_data_dir:
+print "\n data dirctory %s ...." %all_raw_data
 
-    print "\n Processing %s ........." %basepath(current_data_dir)
+for current_data_dir in all_raw_data:
 
-    dirname =ntpath.basename(current_data_dir)
+    print "\n processing %s...." %basepath(current_data_dir)
+
+    dirname = ntpath.basename(current_data_dir)
     print dirname
-    ff = glob.glob(r"D:\#Resilient_Cities\Phase_I_output\%s\*urban_edge_t3.*" %(dirname))
-    print ff
-    folderpath = r"D:\#Resilient_Cities\T3\%s" %dirname
-    print folderpath
-    if not os.path.exists(folderpath):
-        os.makedirs(folderpath)
-        for ft in ff:
-            shutil.copy(ft,folderpath) ###
-            files = os.listdir(folderpath)
-            files_xlsx = [f for f in files if f[:10] == 'urban_edge']
-            print files_xlsx
-            for root, dir,files in os.walk(folderpath):
-                for f in files_xlsx:
-                    print f
-                    dirname2 = ntpath.basename(root)
-                    ori = root + '/'+ f
-                    dest = root +'/' + dirname2 +f[-4:]
-                    print dest
-                    os.rename(ori,dest)
+
+    for xx in range(1,4):
+
+        urban_edge = glob.glob(r"%s\%s\*urban_edge_t%d.*" %(raw_data,dirname,xx))
+
+        print urban_edge
+
+        folderpath = r"%s\T%d\%s" %(output_copy_file,xx,dirname)
+
+        print folderpath
+        if not os.path.exists(folderpath):
+            os.makedirs(folderpath)
+            for ft in urban_edge:
+                shutil.copy(ft,folderpath)
+                files = os.listdir(folderpath)
+                files_xlsx = [f for f in files if f[:10] == 'urban_edge']
+                print files_xlsx
+                for root, dir, files in os.walk(folderpath):
+                    for f in files_xlsx:
+                        print f
+                        dirname2 = ntpath.basename(root)
+                        ori = root +'/'+f
+                        dest = root+'/'+dirname2+f[-4:]
+                        print dest
+                        os.rename(ori,dest)
          
 
       
